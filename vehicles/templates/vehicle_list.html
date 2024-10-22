@@ -1,0 +1,84 @@
+{% extends 'layout.html' %} {% block content %}
+<h1>Vehicle List</h1>
+
+<div class="">
+  <div class="search-create-container">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search vehicles..."
+      class="search-input"
+    />
+    <a class="btn btn-primary" href="/create">Add new</a>
+  </div>
+  <div class="table-responsive">
+    <table id="vehicleTable" class="table">
+      <thead>
+        <tr>
+          <th>VIN</th>
+          <th>Manufacturer</th>
+          <th>Year</th>
+          <th>Body Type</th>
+          <th>Engine Type</th>
+          <th>Transmission</th>
+          <th>Seating Capacity</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Registration Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vehicle in vehicles %}
+        <tr>
+          <td>{{ vehicle.vin }}</td>
+          <td>{{ vehicle.manufacturer }}</td>
+          <td>{{ vehicle.year }}</td>
+          <td>{{ vehicle.body_type }}</td>
+          <td>{{ vehicle.engine_type }}</td>
+          <td>{{ vehicle.transmission }}</td>
+          <td>{{ vehicle.seating_capacity }}</td>
+          <td>${{ vehicle.price|floatformat:2 }}</td>
+          <td>{{ vehicle.status }}</td>
+          <td>{{ vehicle.registration_date|date:"Y-m-d" }}</td>
+          <td>
+            <a
+              href="{% url 'update_vehicle' vehicle.pk %}"
+              class="btn btn-warning"
+              >Edit</a
+            >
+            <a
+              href="{% url 'delete_vehicle' vehicle.pk %}"
+              class="btn btn-danger"
+              onclick="return confirm('Are you sure you want to delete this vehicle?');"
+              >Delete</a
+            >
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="11">No vehicles available.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div id="pagination" class="pagination">
+      <div class="step-links">
+          {% if vehicles.has_previous %}
+          <button  class="btn btn-primary"><a href="?page=1">&laquo; first</a></button>
+              <button class="btn btn-primary"><a href="?page={{ vehicles.previous_page_number }}">previous</a></button>
+          {% endif %}
+  
+          <span class="current">
+              Page {{ vehicles.number }} of {{ vehicles.paginator.num_pages }}.
+          </span>
+  
+          {% if vehicles.has_next %}
+          <button  class="btn btn-primary"><a href="?page={{ vehicles.next_page_number }}">next</a></button>
+            <button  class="btn btn-primary"><a href="?page={{ vehicles.paginator.num_pages }}">last &raquo;</a></button>
+          {% endif %}
+        </div>
+  </div>
+</div>
+{% endblock %}
